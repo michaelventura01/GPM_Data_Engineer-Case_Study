@@ -1,0 +1,13 @@
+# External Excel Source Configuration
+source:
+  type: excel
+  path: "../Source/CRM Data Set - Case Study.xlsx"  # Relative path
+  
+sheets:
+  deals: "Deals"           # Sheet name containing deals data
+  activities: "Activities" # Sheet name containing activities
+  stages: "Stages"         # Sheet name containing stages
+  pipeline: "Pipeline"     # Sheet name containing pipeline
+  organizations: "Organizations"  # Sheet name containing organizations
+
+refresh_schedule: "daily"

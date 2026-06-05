@@ -1,0 +1,40 @@
+ID,Name,Order_nr,Pipeline_ID,Deal_probability,Days_to_rotten,Is_deleted
+110,Lead In,1,19,5,1.0,False
+111,Contact Made,3,19,15,3.0,False
+112,Qualified,4,19,35,2.0,False
+113,Negotiation,6,19,75,5.0,False
+114,Decision Pending,7,19,90,3.0,False
+115,Awaiting Response,8,19,0,,False
+116,Proposal Sent,5,19,55,5.0,False
+117,Lead In,1,20,0,3.0,False
+118,Contact Attempted,2,20,0,5.0,False
+119,Negotiation,6,20,100,5.0,False
+123,Contact Made,3,20,100,4.0,False
+124,Proposal Sent,5,20,100,14.0,False
+125,Qualified,4,20,100,5.0,False
+126,Decision Pending,7,20,60,0.0,False
+127,Lead In,1,21,100,,False
+128,Contact Attempted,2,21,100,,False
+129,Contact Made,3,21,100,,False
+130,Qualified,4,21,100,,False
+131,Proposal Sent,5,21,100,,False
+132,Awaiting Response,8,20,100,,False
+133,Closed Won,9,20,100,,False
+134,Closed Won,9,19,100,,False
+135,Closed Lost,10,19,0,,False
+136,Contact Attempted,2,22,100,5.0,False
+137,Contact Made,3,22,100,5.0,False
+138,Qualified,4,22,100,15.0,False
+139,Proposal Sent,5,22,100,7.0,False
+140,Awaiting Response,8,22,100,36.0,False
+141,Closed Won,9,22,100,,False
+142,Closed Lost,10,22,100,,False
+143,Lead In,1,22,100,,False
+144,Decision Pending,7,22,100,29.0,False
+145,Negotiation,6,22,100,,False
+146,Lead In,1,23,100,,False
+147,Contact Attempted,2,23,100,,False
+148,Contact Made,3,23,100,,False
+149,Qualified,4,23,100,,False
+150,Proposal Sent,5,23,100,,False
+160,Contact Attempted,2,19,100,,False

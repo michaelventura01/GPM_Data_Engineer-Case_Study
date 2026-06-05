@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres_staging:
+    image: postgres:14
+    container_name: crm_postgres_staging
+    environment:
+      POSTGRES_DB: crm_staging
+      POSTGRES_USER: staging_user
+      POSTGRES_PASSWORD: staging_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_staging_data:/var/lib/postgresql/data
+      - ./init_postgres.sql:/docker-entrypoint-initdb.d/init.sql
+      # Mount the source directory to access Excel file from container
+      - ../Source:/source_data:ro
+    restart: unless-stopped
+
+  mysql_production:
+    image: mysql:8.0
+    container_name: crm_mysql_production
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: crm_production
+      MYSQL_USER: prod_user
+      MYSQL_PASSWORD: prod_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_production_data:/var/lib/mysql
+      - ./init_mysql.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+
+  adminer:
+    image: adminer:latest
+    container_name: crm_adminer
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  postgres_staging_data:
+  mysql_production_data:

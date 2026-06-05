@@ -1,0 +1,122 @@
+name: Test CRM Analytics Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: crm_staging
+          POSTGRES_USER: staging_user
+          POSTGRES_PASSWORD: staging_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: crm_production
+          MYSQL_USER: prod_user
+          MYSQL_PASSWORD: prod_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-test.txt
+    
+    - name: Setup database schemas
+      run: |
+        psql -h localhost -U staging_user -d crm_staging -f init_postgres.sql
+        mysql -h localhost -u prod_user -pprod_password crm_production < init_mysql.sql
+    
+    - name: Generate sample data
+      run: |
+        python scripts/generate_sample_data.py
+    
+    - name: Run data loading
+      run: |
+        python scripts/read_excel_source.py
+        python scripts/load_data_postgres.py
+    
+    - name: Run dbt
+      run: |
+        cd dbt
+        dbt deps
+        dbt run
+        cd ..
+    
+    - name: Run unit tests
+      run: |
+        pytest tests/unit/ -v -m "not database"
+    
+    - name: Run integration tests
+      run: |
+        pytest tests/integration/ -v
+    
+    - name: Run data quality tests
+      run: |
+        pytest tests/integration/test_data_quality.py -v
+    
+    - name: Upload test coverage
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+    
+    - name: Run performance tests
+      run: |
+        pytest tests/integration/test_pipeline.py::TestPerformance -v
+    
+    - name: Generate test report
+      if: always()
+      run: |
+        pytest --html=report.html --self-contained-html
+        mkdir test-reports
+        mv report.html test-reports/
+    
+    - name: Upload test reports
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-reports
+        path: test-reports/

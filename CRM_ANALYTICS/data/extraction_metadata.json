@@ -1,0 +1,18 @@
+{
+  "extracted_at": "2026-06-05T00:31:48.513077",
+  "source_file": "../Source/CRM Data Set - Case Study.xlsx",
+  "sheets_loaded": [
+    "deals",
+    "activities",
+    "stages",
+    "pipeline",
+    "organizations"
+  ],
+  "row_counts": {
+    "deals": 9756,
+    "activities": 5864,
+    "stages": 39,
+    "pipeline": 5,
+    "organizations": 23
+  }
+}
